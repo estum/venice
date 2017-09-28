@@ -54,7 +54,7 @@ module Venice
 
         return receipt
       else
-        raise Receipt::VerificationError.new(status, receipt)
+        raise Receipt::VerificationError.new(status, json)
       end
     end
 
