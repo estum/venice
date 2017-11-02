@@ -68,17 +68,13 @@ module Venice
       parameters['password'] = @shared_secret if @shared_secret
 
       uri = URI(@verification_url)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-
-      request = Net::HTTP::Post.new(uri.request_uri)
-      request['Accept'] = "application/json"
-      request['Content-Type'] = "application/json"
-      request.body = parameters.to_json
-
-      response = http.request(request)
-
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, verify_mode: OpenSSL::SSL::VERIFY_PEER) do |http|
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request['Accept'] = "application/json"
+        request['Content-Type'] = "application/json"
+        request.body = parameters.to_json
+        http.request(request)
+      end
       JSON.parse(response.body)
     end
   end
